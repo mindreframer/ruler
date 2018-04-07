@@ -37,6 +37,11 @@ defmodule Ruler.InterpreterListTest do
     check([">=", 5, 6], false)
   end
 
+  test "works with logic operands" do
+    check(["and", [">", 5, 4], true], true)
+    check(["and", [">", 5, 4], false], false)
+  end
+
   test "works with data in context" do
     ctx = %{"a" => %{"b" => 5}}
     check(ctx, ["-", [".", "a", "b"], 4], 1)

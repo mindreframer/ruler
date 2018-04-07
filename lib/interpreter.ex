@@ -39,6 +39,9 @@ defmodule Ruler.InterpreterList do
   end
 
   ## logic
+  def reduce(ctx, ["and" | conditions]) do
+    Enum.all?(conditions, fn(x)-> reduce(ctx, x) == true end)
+  end
 
   # read from context
   def reduce(ctx, ["." | path]) do
@@ -55,6 +58,12 @@ defmodule Ruler.InterpreterList do
   end
 
   def reduce(_ctx, expr) when is_number(expr) do
+    expr
+  end
+  def reduce(_ctx, expr) when is_boolean(expr) do
+    expr
+  end
+  def reduce(_ctx, expr) when is_binary(expr) do
     expr
   end
 end
