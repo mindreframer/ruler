@@ -1,6 +1,16 @@
 # Ruler
 
-**TODO: Add description**
+A flexible, LISP-based rule engine for Elixir.
+
+
+
+## Goals
+
+- unlimited flexibility
+- rules can be compiled for better performance
+- extensive use of pattern matching behind the scenes
+- rules can be stored in nested lists (LISP without many features)
+...
 
 ## Installation
 
@@ -18,4 +28,3 @@ end
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/ruler](https://hexdocs.pm/ruler).
-
