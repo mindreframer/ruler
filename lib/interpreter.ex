@@ -43,6 +43,10 @@ defmodule Ruler.InterpreterList do
     Enum.all?(conditions, fn(x)-> reduce(ctx, x) == true end)
   end
 
+  def reduce(ctx, ["or" | conditions]) do
+    Enum.any?(conditions, fn(x)-> reduce(ctx, x) == true end)
+  end
+
   # read from context
   def reduce(ctx, ["." | path]) do
     Ruler.Context.get(ctx, path)

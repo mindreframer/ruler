@@ -38,8 +38,15 @@ defmodule Ruler.InterpreterListTest do
   end
 
   test "works with logic operands" do
-    check(["and", [">", 5, 4], true], true)
-    check(["and", [">", 5, 4], false], false)
+    check(["and", true, true], true)
+    check(["and", true, false], false)
+    check(["and", false, false], false)
+
+    check(["or", true, false], true)
+    check(["or", false, true], true)
+    check(["or", false, false], false)
+
+    check(["or", [">", 2, 1], false], true)
   end
 
   test "works with data in context" do
