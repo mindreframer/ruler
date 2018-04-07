@@ -1,0 +1,17 @@
+[
+  "-",
+  [
+    "*",
+    [".", "Item", "Attributes", "rrp"],
+    ["*", [".", "Item", "Quantity"], ["/", 30, 100]]
+  ],
+  [
+    "*",
+    [".", "Item", "Quantity"],
+    [
+      "-",
+      [".", "Item", "Attributes", "rrp"],
+      [".", "Item", "Price"]
+    ]
+  ]
+]
