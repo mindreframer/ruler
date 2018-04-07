@@ -10,7 +10,7 @@ defmodule Ruler.InterpreterListTest do
     assert Ruler.InterpreterList.reduce(ctx, expr) == out
   end
 
-  test "works with flat formulas" do
+  test "works with basic math" do
     check(["+", 1, 2], 3)
     check(["-", 5, 4], 1)
     check(["/", 5.0, 2], 2.5)
@@ -19,9 +19,22 @@ defmodule Ruler.InterpreterListTest do
 
   test "works with nested formulas" do
     check(["+", ["-", 5, 4], 2], 3)
-    check(["-", 5, 4], 1)
-    check(["/", 5.0, 2], 2.5)
-    check(["*", 6, 2], 12)
+  end
+
+  test "works with comparisons" do
+    check([">", 5, 4], true)
+    check([">", 4, 5], false)
+
+    check(["<", 5, 4], false)
+    check(["<", 4, 5], true)
+
+    check(["<=", 5, 5], true)
+    check(["<=", 4, 5], true)
+    check(["<=", 6, 5], false)
+
+    check([">=", 5, 5], true)
+    check([">=", 5, 4], true)
+    check([">=", 5, 6], false)
   end
 
   test "works with data in context" do

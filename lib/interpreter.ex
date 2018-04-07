@@ -1,4 +1,6 @@
 defmodule Ruler.InterpreterList do
+
+  ## math
   def reduce(ctx, ["+", op1, op2]) do
     reduce(ctx, op1) + reduce(ctx, op2)
   end
@@ -14,6 +16,29 @@ defmodule Ruler.InterpreterList do
   def reduce(ctx, ["*", op1, op2]) do
     reduce(ctx, op1) * reduce(ctx, op2)
   end
+
+  ## comparisons
+  def reduce(ctx, [">", op1, op2]) do
+    reduce(ctx, op1) > reduce(ctx, op2)
+  end
+
+  def reduce(ctx, ["<", op1, op2]) do
+    reduce(ctx, op1) < reduce(ctx, op2)
+  end
+
+  def reduce(ctx, ["<=", op1, op2]) do
+    reduce(ctx, op1) <= reduce(ctx, op2)
+  end
+
+  def reduce(ctx, [">=", op1, op2]) do
+    reduce(ctx, op1) >= reduce(ctx, op2)
+  end
+
+  def reduce(ctx, ["==", op1, op2]) do
+    reduce(ctx, op1) == reduce(ctx, op2)
+  end
+
+  ## logic
 
   # read from context
   def reduce(ctx, ["." | path]) do
