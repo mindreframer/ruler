@@ -12,6 +12,13 @@ A flexible, LISP-based rule engine for Elixir.
 - rules can be stored in nested lists (LISP without many features)
 ...
 
+
+## Development
+
+  - https://github.com/navinpeiris/ex_unit_notifier
+    - https://github.com/julienXX/terminal-notifier
+    $ brew install terminal-notifier
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
