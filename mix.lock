@@ -1,4 +1,6 @@
 %{
+  "benchee": {:hex, :benchee, "0.12.1", "1286a79bab2f1899220134daf9a695586af00ea71968e6cd89d3d3afdf7cecba", [:mix], [{:deep_merge, "~> 0.1", [hex: :deep_merge, repo: "hexpm", optional: false]}], "hexpm"},
+  "deep_merge": {:hex, :deep_merge, "0.1.1", "c27866a7524a337b6a039eeb8dd4f17d458fd40fbbcb8c54661b71a22fffe846", [:mix], [], "hexpm"},
   "ex_unit_notifier": {:hex, :ex_unit_notifier, "0.1.4", "36a2dcab829f506e01bf17816590680dd1474407926d43e64c1263e627c364b8", [:mix], [], "hexpm"},
   "exfswatch": {:hex, :exfswatch, "0.2.1", "3f34190e2750ae6d924ce53729bb40e050dd8a08fee683847e6ddfa03ea5429f", [:mix], [{:fs, "~> 0.9", [hex: :fs, repo: "hexpm", optional: false]}], "hexpm"},
   "file_system": {:hex, :file_system, "0.2.4", "f0bdda195c0e46e987333e986452ec523aed21d784189144f647c43eaf307064", [:mix], [], "hexpm"},
