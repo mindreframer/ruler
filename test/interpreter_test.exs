@@ -1,19 +1,30 @@
-defmodule Ruler.InterpreterTest do
+defmodule Ruler.InterpreterListTest do
   use ExUnit.Case
-  doctest Ruler.Interpreter
+  doctest Ruler.InterpreterList
 
-
-
-  def check(expr, out) do
-    assert apply(Ruler.Interpreter, :reduce, expr) == out
+  def check(expr, out) when is_list(expr) do
+    assert Ruler.InterpreterList.reduce(%{}, expr) == out
   end
 
-  test "greets the world" do
+  def check(ctx, expr, out) when is_list(expr) do
+    assert Ruler.InterpreterList.reduce(ctx, expr) == out
+  end
+
+  test "works with flat formulas" do
     check(["+", 1, 2], 3)
     check(["-", 5, 4], 1)
     check(["/", 5.0, 2], 2.5)
     check(["*", 6, 2], 12)
   end
-end
 
-# Ruler.Interpreter.reduce("+", 1, 6)
+  test "works with nested formulas" do
+    check(["+", ["-", 5, 4], 2], 3)
+    check(["-", 5, 4], 1)
+    check(["/", 5.0, 2], 2.5)
+    check(["*", 6, 2], 12)
+  end
+
+  test "works with data in context" do
+    check(%{"a" => %{"b" => 5}}, ["-", [".", "a", "b"], 4], 1)
+  end
+end
