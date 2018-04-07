@@ -50,8 +50,19 @@ defmodule Ruler.InterpreterListTest do
   end
 
   test "works with data in context" do
-    ctx = %{"a" => %{"b" => 5}}
+    ctx = %{"a" => %{"b" => 5}, "d"=> 1}
     check(ctx, ["-", [".", "a", "b"], 4], 1)
+    check(ctx, ["+", [".", "d"], 1], 2)
     check(ctx, ["-", [".|", 6, "a", "c"], 4], 2)
+  end
+
+  test "state in agents" do
+    {:ok, ctx} = Ruler.KVAgent.start_link([])
+    Ruler.InterpreterList.reduce(ctx, ["set", "a", 1])
+    assert Ruler.KVAgent.get(ctx, ["a"]) == 1
+    check(ctx, ["==", [".", "a"], 1], true)
+    check(ctx, ["==", [".", "a"], 2], false)
+    Ruler.InterpreterList.reduce(ctx, ["set", "a", 2])
+    check(ctx, ["==", [".", "a"], 2], true)
   end
 end
