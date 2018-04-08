@@ -58,11 +58,11 @@ defmodule Ruler.InterpreterListTest do
 
   test "state in agents" do
     {:ok, ctx} = Ruler.KVAgent.start_link([])
-    Ruler.InterpreterList.reduce(ctx, ["set", "a", 1])
-    assert Ruler.KVAgent.get(ctx, ["a"]) == 1
-    check(ctx, ["==", [".", "a"], 1], true)
-    check(ctx, ["==", [".", "a"], 2], false)
-    Ruler.InterpreterList.reduce(ctx, ["set", "a", 2])
-    check(ctx, ["==", [".", "a"], 2], true)
+    check(ctx, ["set", "a", 1], :ok)
+    check(ctx, [".", "a"], 1)
+
+    check(ctx, ["set", "b", %{}], :ok)
+    check(ctx, ["set", "b", "d", 2], :ok)
+    check(ctx, [".", "b", "d"], 2)
   end
 end
