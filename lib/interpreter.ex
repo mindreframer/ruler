@@ -95,35 +95,3 @@ defmodule Ruler.Context do
     Ruler.KVAgent.set(ctx, path, val)
   end
 end
-
-
-
-defmodule Ruler.KVAgent do
-  # https://elixir-lang.org/getting-started/mix-otp/agent.html
-  use Agent
-
-  @doc """
-  Starts a new KVAgent.
-  """
-  def start_link(_opts) do
-    Agent.start_link(fn -> %{} end)
-  end
-
-  @doc """
-  Gets a value from the `bucket` by `key`.
-  """
-  def get(pid, path) do
-    Agent.get(pid, &get_in(&1, path))
-  end
-
-  @doc """
-  Puts the `value` for the given `key` in the `bucket`.
-  """
-  def set(pid, path, value) do
-    Agent.update(pid, &put_in(&1, path, value))
-  end
-
-  def reset(pid) do
-    Agent.update(pid, fn(_) -> %{} end)
-  end
-end
