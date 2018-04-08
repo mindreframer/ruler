@@ -1,6 +1,7 @@
 defmodule Ruler.InterpreterListTest do
   use ExUnit.Case
   doctest Ruler.InterpreterList
+  use DecimalArithmetic # this helps asserting decimals against plain values
 
   def check(expr, out) when is_list(expr) do
     assert Ruler.InterpreterList.reduce(%{}, expr) == out

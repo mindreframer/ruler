@@ -1,4 +1,5 @@
 defmodule Ruler.InterpreterList do
+  use DecimalArithmetic
   ## math
   def reduce(ctx, ["+", op1, op2]) do
     reduce(ctx, op1) + reduce(ctx, op2)
@@ -69,7 +70,7 @@ defmodule Ruler.InterpreterList do
   end
 
   def reduce(_ctx, expr) when is_number(expr) do
-    expr
+    Decimal.new(expr)
   end
 
   def reduce(_ctx, expr) when is_boolean(expr) do

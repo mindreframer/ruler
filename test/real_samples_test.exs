@@ -19,6 +19,6 @@ defmodule Ruler.RealSamplesTest do
       }
     }
     res = Ruler.InterpreterList.reduce(ctx, a)
-    assert res == 28.109999999999985
+    assert res == Decimal.new(28.10999999999998)
   end
 end
