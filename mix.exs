@@ -24,7 +24,8 @@ defmodule Ruler.MixProject do
       {:mr_t, "~> 0.6.0", only: [:test, :dev]},
       {:mix_test_watch, "~> 0.5", only: :dev, runtime: false},
       {:benchee, "~> 0.11", only: :dev},
-      {:ex_unit_notifier, "~> 0.1", only: :test}
+      {:ex_unit_notifier, "~> 0.1", only: :test},
+      {:poison, "~> 3.1", only: :test}
     ]
   end
 end
