@@ -33,7 +33,7 @@ defmodule Ruler.KVAgent do
   end
 
   def reset(pid) do
-    Agent.update(pid, fn(_) -> %{} end)
+    Agent.update(pid, fn(_) -> @initialstate end)
   end
 
   def dumpstate(pid) do
