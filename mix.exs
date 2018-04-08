@@ -21,8 +21,8 @@ defmodule Ruler.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:numbers, "~> 5.1"},
-      {:decimal, "~> 1.3"},
+      {:decimal_arithmetic, "~> 0.1"},
+      {:decimal, "~> 1.5"},
       {:mr_t, "~> 0.6.0", only: [:test, :dev]},
       {:mix_test_watch, "~> 0.5", only: :dev, runtime: false},
       {:benchee, "~> 0.11", only: :dev},
