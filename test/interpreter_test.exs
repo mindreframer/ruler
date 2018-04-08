@@ -50,7 +50,12 @@ defmodule Ruler.InterpreterListTest do
   end
 
   test "works with data in context" do
-    ctx = %{"a" => %{"b" => 5}, "d"=> 1}
+    ctx = %{
+      "bindings" => %{"a" => %{"b" => 5}, "d"=> 1}
+    }
+    check(ctx, [".", "a"], %{"b" => 5})
+    check(ctx, [".", "d"], 1)
+
     check(ctx, ["-", [".", "a", "b"], 4], 1)
     check(ctx, ["+", [".", "d"], 1], 2)
     check(ctx, ["-", [".|", 6, "a", "c"], 4], 2)

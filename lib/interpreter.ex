@@ -49,22 +49,23 @@ defmodule Ruler.InterpreterList do
 
   # read from context
   def reduce(ctx, ["." | path]) do
-    Ruler.Context.get(ctx, path)
+    Ruler.Context.get(ctx, bindings_path(path))
   end
 
   # read from context, fallback to default
   def reduce(ctx, [".|" | [default_value | path]]) do
-    res = Ruler.Context.get(ctx, path)
+    res = Ruler.Context.get(ctx, bindings_path(path))
     case res do
       nil -> default_value
       _ -> res
     end
   end
 
+  # set value on context
   def reduce(ctx, ["set" | path_with_val]) do
     val = List.last(path_with_val)
     path = path_with_val -- [val]
-    Ruler.Context.set(ctx, path, val)
+    Ruler.Context.set(ctx, bindings_path(path), val)
   end
 
   def reduce(_ctx, expr) when is_number(expr) do
@@ -75,6 +76,10 @@ defmodule Ruler.InterpreterList do
   end
   def reduce(_ctx, expr) when is_binary(expr) do
     expr
+  end
+
+  defp bindings_path(path) do
+    ["bindings" | path]
   end
 end
 

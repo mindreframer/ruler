@@ -2,11 +2,16 @@ defmodule Ruler.KVAgent do
   # https://elixir-lang.org/getting-started/mix-otp/agent.html
   use Agent
 
+  @initialstate %{
+    "bindings" => %{},
+    "templates" => %{},
+    "functions" => %{},
+  }
   @doc """
   Starts a new KVAgent.
   """
   def start_link(_opts) do
-    Agent.start_link(fn -> %{} end)
+    Agent.start_link(fn -> @initialstate end)
   end
 
   @doc """
@@ -29,6 +34,10 @@ defmodule Ruler.KVAgent do
 
   def reset(pid) do
     Agent.update(pid, fn(_) -> %{} end)
+  end
+
+  def dumpstate(pid) do
+    Agent.get(pid, fn(x)-> x end)
   end
 
   defp subpath(path) do
