@@ -22,6 +22,7 @@ defmodule Ruler.MixProject do
   defp deps do
     [
       {:numbers, "~> 5.1"},
+      {:decimal, "~> 1.3"},
       {:mr_t, "~> 0.6.0", only: [:test, :dev]},
       {:mix_test_watch, "~> 0.5", only: :dev, runtime: false},
       {:benchee, "~> 0.11", only: :dev},
