@@ -5,7 +5,7 @@ defmodule Ruler.KVAgent do
   @initialstate %{
     "bindings" => %{},
     "templates" => %{},
-    "functions" => %{},
+    "functions" => %{}
   }
   @doc """
   Starts a new KVAgent.
@@ -33,11 +33,11 @@ defmodule Ruler.KVAgent do
   end
 
   def reset(pid) do
-    Agent.update(pid, fn(_) -> @initialstate end)
+    Agent.update(pid, fn _ -> @initialstate end)
   end
 
   def dumpstate(pid) do
-    Agent.get(pid, fn(x)-> x end)
+    Agent.get(pid, fn x -> x end)
   end
 
   defp subpath(path) do

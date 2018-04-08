@@ -1,5 +1,4 @@
 defmodule Ruler.InterpreterList do
-
   ## math
   def reduce(ctx, ["+", op1, op2]) do
     reduce(ctx, op1) + reduce(ctx, op2)
@@ -40,11 +39,11 @@ defmodule Ruler.InterpreterList do
 
   ## logic
   def reduce(ctx, ["and" | conditions]) do
-    Enum.all?(conditions, fn(x)-> reduce(ctx, x) == true end)
+    Enum.all?(conditions, fn x -> reduce(ctx, x) == true end)
   end
 
   def reduce(ctx, ["or" | conditions]) do
-    Enum.any?(conditions, fn(x)-> reduce(ctx, x) == true end)
+    Enum.any?(conditions, fn x -> reduce(ctx, x) == true end)
   end
 
   # read from context
@@ -55,6 +54,7 @@ defmodule Ruler.InterpreterList do
   # read from context, fallback to default
   def reduce(ctx, [".|" | [default_value | path]]) do
     res = Ruler.Context.get(ctx, bindings_path(path))
+
     case res do
       nil -> default_value
       _ -> res
@@ -71,9 +71,11 @@ defmodule Ruler.InterpreterList do
   def reduce(_ctx, expr) when is_number(expr) do
     expr
   end
+
   def reduce(_ctx, expr) when is_boolean(expr) do
     expr
   end
+
   def reduce(_ctx, expr) when is_binary(expr) do
     expr
   end
