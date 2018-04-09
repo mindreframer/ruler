@@ -67,6 +67,7 @@ defmodule Ruler.InterpreterListTest do
     check(ctx, ["set", "a", 1], :ok)
     check(ctx, [".", "a"], 1)
 
+    # setting nested paths requires the objects to exist
     check(ctx, ["set", "b", %{}], :ok)
     check(ctx, ["set", "b", "d", 2], :ok)
     check(ctx, [".", "b", "d"], 2)
