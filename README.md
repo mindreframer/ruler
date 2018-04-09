@@ -19,6 +19,9 @@ A flexible, LISP-based rule engine for Elixir.
     - https://github.com/julienXX/terminal-notifier
     $ brew install terminal-notifier
 
+
+    ## run test watcher
+    $ mix test.watch
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed

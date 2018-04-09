@@ -14,7 +14,7 @@ defmodule Ruler.InterpreterListTest do
   test "works with basic math" do
     check(["+", 1, 2], 3)
     check(["-", 5, 4], 1)
-    check(["/", 5.0, 2], 2.5)
+    check(["/", 5, 2], 2.5)
     check(["*", 6, 2], 12)
   end
 
