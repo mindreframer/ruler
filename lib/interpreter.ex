@@ -73,11 +73,9 @@ defmodule Ruler.InterpreterList do
     Decimal.new(expr)
   end
 
-  def reduce(_ctx, expr) when is_boolean(expr) do
-    expr
-  end
-
-  def reduce(_ctx, expr) when is_binary(expr) do
+  def reduce(_ctx, expr)
+      when is_boolean(expr)
+      when is_binary(expr) do
     expr
   end
 
