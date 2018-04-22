@@ -1,7 +1,8 @@
 defmodule Ruler.InterpreterListTest do
   use ExUnit.Case
   doctest Ruler.InterpreterStateless
-  use DecimalArithmetic # this helps asserting decimals against plain values
+  # this helps asserting decimals against plain values
+  use DecimalArithmetic
 
   def check(expr, out) when is_list(expr) do
     {:ok, res, _new_ctx} = Ruler.InterpreterStateless.eval_ast(%{}, expr)
@@ -54,7 +55,7 @@ defmodule Ruler.InterpreterListTest do
 
   test "works with data in context" do
     ctx = %{
-      "bindings" => %{"a" => %{"b" => 5}, "d"=> 1}
+      "bindings" => %{"a" => %{"b" => 5}, "d" => 1}
     }
     check(ctx, [".", "a"], %{"b" => 5})
     check(ctx, [".", "d"], 1)
@@ -62,5 +63,14 @@ defmodule Ruler.InterpreterListTest do
     check(ctx, ["-", [".", "a", "b"], 4], 1)
     check(ctx, ["+", [".", "d"], 1], 2)
     check(ctx, ["-", [".|", 6, "a", "c"], 4], 2)
+  end
+
+  test "setting / getting context data works" do
+    ctx = %{
+      "bindings" => %{"a" => %{"b" => 5}, "d" => 1}
+    }
+    {:ok, true, new_ctx} = Ruler.InterpreterStateless.eval_ast(ctx, ["set", "a", "b", 7])
+    assert Ruler.InterpreterStateless.eval_ast(ctx, [".", "a", "b"]) |> elem(1) == 5
+    assert Ruler.InterpreterStateless.eval_ast(new_ctx, [".", "a", "b"]) |> elem(1) == 7
   end
 end
