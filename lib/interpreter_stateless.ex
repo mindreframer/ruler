@@ -4,67 +4,67 @@ defmodule Ruler.InterpreterStateless do
   use DecimalArithmetic
   ## math
   def eval_ast(ctx, ["+", op1, op2]) do
-    with {:ok, op1} <- eval_ast(ctx, op1),
-         {:ok, op2} <- eval_ast(ctx, op2),
-         do: {:ok, op1 + op2}
+    with {:ok, op1, ctx} <- eval_ast(ctx, op1),
+         {:ok, op2, ctx} <- eval_ast(ctx, op2),
+         do: {:ok, op1 + op2, ctx}
   end
 
   def eval_ast(ctx, ["-", op1, op2]) do
-    with {:ok, op1} <- eval_ast(ctx, op1),
-         {:ok, op2} <- eval_ast(ctx, op2),
-         do: {:ok, op1 - op2}
+    with {:ok, op1, ctx} <- eval_ast(ctx, op1),
+         {:ok, op2, ctx} <- eval_ast(ctx, op2),
+         do: {:ok, op1 - op2, ctx}
   end
 
   def eval_ast(ctx, ["/", op1, op2]) do
-    with {:ok, op1} <- eval_ast(ctx, op1),
-         {:ok, op2} <- eval_ast(ctx, op2),
-         do: {:ok, op1 / op2}
+    with {:ok, op1, ctx} <- eval_ast(ctx, op1),
+         {:ok, op2, ctx} <- eval_ast(ctx, op2),
+         do: {:ok, op1 / op2, ctx}
   end
 
   def eval_ast(ctx, ["*", op1, op2]) do
-    with {:ok, op1} <- eval_ast(ctx, op1),
-         {:ok, op2} <- eval_ast(ctx, op2),
-         do: {:ok, op1 * op2}
+    with {:ok, op1, ctx} <- eval_ast(ctx, op1),
+         {:ok, op2, ctx} <- eval_ast(ctx, op2),
+         do: {:ok, op1 * op2, ctx}
   end
 
   ## comparisons
   def eval_ast(ctx, [">", op1, op2]) do
-    with {:ok, op1} <- eval_ast(ctx, op1),
-         {:ok, op2} <- eval_ast(ctx, op2),
-         do: {:ok, op1 > op2}
+    with {:ok, op1, ctx} <- eval_ast(ctx, op1),
+         {:ok, op2, ctx} <- eval_ast(ctx, op2),
+         do: {:ok, op1 > op2, ctx}
   end
 
   def eval_ast(ctx, ["<", op1, op2]) do
-    with {:ok, op1} <- eval_ast(ctx, op1),
-         {:ok, op2} <- eval_ast(ctx, op2),
-         do: {:ok, op1 < op2}
+    with {:ok, op1, ctx} <- eval_ast(ctx, op1),
+         {:ok, op2, ctx} <- eval_ast(ctx, op2),
+         do: {:ok, op1 < op2, ctx}
   end
 
   def eval_ast(ctx, ["<=", op1, op2]) do
-    with {:ok, op1} <- eval_ast(ctx, op1),
-         {:ok, op2} <- eval_ast(ctx, op2),
-         do: {:ok, op1 <= op2}
+    with {:ok, op1, ctx} <- eval_ast(ctx, op1),
+         {:ok, op2, ctx} <- eval_ast(ctx, op2),
+         do: {:ok, op1 <= op2, ctx}
   end
 
   def eval_ast(ctx, [">=", op1, op2]) do
-    with {:ok, op1} <- eval_ast(ctx, op1),
-         {:ok, op2} <- eval_ast(ctx, op2),
-         do: {:ok, op1 >= op2}
+    with {:ok, op1, ctx} <- eval_ast(ctx, op1),
+         {:ok, op2, ctx} <- eval_ast(ctx, op2),
+         do: {:ok, op1 >= op2, ctx}
   end
 
   def eval_ast(ctx, ["==", op1, op2]) do
-    with {:ok, op1} <- eval_ast(ctx, op1),
-         {:ok, op2} <- eval_ast(ctx, op2),
-         do: {:ok, op1 == op2}
+    with {:ok, op1, ctx} <- eval_ast(ctx, op1),
+         {:ok, op2, ctx} <- eval_ast(ctx, op2),
+         do: {:ok, op1 == op2, ctx}
   end
 
   ## logic
   def eval_ast(ctx, ["and" | conditions]) do
-    {:ok, Enum.all?(conditions, fn x -> eval_ast(ctx, x) == {:ok, true} end)}
+    {:ok, Enum.all?(conditions, fn x -> eval_ast(ctx, x) == {:ok, true, ctx} end), ctx}
   end
 
   def eval_ast(ctx, ["or" | conditions]) do
-    {:ok, Enum.any?(conditions, fn x -> eval_ast(ctx, x) == {:ok, true} end)}
+    {:ok, Enum.any?(conditions, fn x -> eval_ast(ctx, x) == {:ok, true, ctx} end), ctx}
   end
 
   # read from context
@@ -89,14 +89,14 @@ defmodule Ruler.InterpreterStateless do
     Ruler.Context.set(ctx, bindings_path(path), val)
   end
 
-  def eval_ast(_ctx, expr) when is_number(expr) do
-    {:ok, Decimal.new(expr)}
+  def eval_ast(ctx, expr) when is_number(expr) do
+    {:ok, Decimal.new(expr), ctx}
   end
 
-  def eval_ast(_ctx, expr)
+  def eval_ast(ctx, expr)
       when is_boolean(expr)
       when is_binary(expr) do
-    {:ok, expr}
+    {:ok, expr, ctx}
   end
 
   defp bindings_path(path) do
