@@ -4,6 +4,10 @@ defmodule Ruler.InterpreterListTest do
   # this helps asserting decimals against plain values
   use DecimalArithmetic
 
+  def eval_ast(ctx, expr) do
+    Ruler.InterpreterStateless.eval_ast(ctx, expr)
+  end
+
   def check(expr, out) when is_list(expr) do
     {:ok, res, _new_ctx} = Ruler.InterpreterStateless.eval_ast(%{}, expr)
     assert res == out
@@ -69,8 +73,8 @@ defmodule Ruler.InterpreterListTest do
     ctx = %{
       "bindings" => %{"a" => %{"b" => 5}, "d" => 1}
     }
-    {:ok, true, new_ctx} = Ruler.InterpreterStateless.eval_ast(ctx, ["set", "a", "b", 7])
-    assert Ruler.InterpreterStateless.eval_ast(ctx, [".", "a", "b"]) |> elem(1) == 5
-    assert Ruler.InterpreterStateless.eval_ast(new_ctx, [".", "a", "b"]) |> elem(1) == 7
+    {:ok, true, new_ctx} = eval_ast(ctx, ["set", "a", "b", 7])
+    assert eval_ast(ctx, [".", "a", "b"]) |> elem(1) == 5
+    assert eval_ast(new_ctx, [".", "a", "b"]) |> elem(1) == 7
   end
 end
