@@ -94,6 +94,13 @@ defmodule Ruler.InterpreterStateless do
          do: {:ok, res, ctx_2}
   end
 
+  def eval_ast(ctx, ["catch" | [default_value | [expr]]]) do
+    case  eval_ast(ctx, expr) do
+      {:ok, res, new_ctx} -> {:ok, res, new_ctx}
+      _ -> {:ok, default_value, ctx}
+    end
+  end
+
   def eval_ast(ctx, expr) when is_number(expr) do
     {:ok, Decimal.new(expr), ctx}
   end

@@ -80,7 +80,7 @@ defmodule Ruler.InterpreterListTest do
     assert eval_ast(new_ctx, [".", "a", "b"]) |> elem(1) == 7
   end
 
-  test "testing :do" do
+  test ":do" do
     ctx = %{
       "bindings" => %{"a" => %{"b" => 5}, "d" => 1}
     }
@@ -112,5 +112,42 @@ defmodule Ruler.InterpreterListTest do
 
     assert res == 15
     assert new_ctx == %{"bindings" => %{"a" => %{"b" => 5}, "d" => 1, "x" => 5}}
+  end
+
+
+  test ":catch" do
+    ctx = %{
+      "bindings" => %{"a" => %{"b" => 5}, "d" => 1}
+    }
+
+    {:ok, res, new_ctx} =
+      eval_ast(ctx, [
+        "catch",
+        "bam",
+        [
+          "do",
+          [".", "a", "c"],
+          [
+            ["x"],
+            ["==", [".", "x"], 5]
+          ]
+        ]
+      ])
+    assert res == "bam"
+
+    {:ok, res, _new_ctx} =
+      eval_ast(ctx, [
+        "catch",
+        "bam",
+        [
+          "do",
+          [".", "a", "b"],
+          [
+            ["x"],
+            ["==", [".", "x"], 5]
+          ]
+        ]
+      ])
+    assert res == true
   end
 end
