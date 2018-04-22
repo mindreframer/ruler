@@ -101,7 +101,9 @@ defmodule Ruler.InterpreterListTest do
     {:ok, res, new_ctx} =
       eval_ast(ctx, [
         "do",
+        # <- path in env
         [".", "a", "b"],
+        # <- block
         [
           ["x"],
           ["+", [".", "x"], 10]
