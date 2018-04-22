@@ -32,3 +32,15 @@ defmodule Ruler.Context do
     path -- [List.last(path)]
   end
 end
+
+
+
+defmodule Ruler.ContextList do
+  def get(ctx, path) when is_map(ctx) do
+    get_in(ctx, path)
+  end
+
+  def set(ctx, path, val) when is_map(ctx) do
+    put_in(ctx, path, val)
+  end
+end

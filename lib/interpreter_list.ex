@@ -51,12 +51,12 @@ defmodule Ruler.InterpreterList do
 
   # read from context
   def reduce(ctx, ["." | path]) do
-    Ruler.Context.get(ctx, bindings_path(path))
+    Ruler.ContextList.get(ctx, bindings_path(path))
   end
 
   # read from context, fallback to default
   def reduce(ctx, [".|" | [default_value | path]]) do
-    res = Ruler.Context.get(ctx, bindings_path(path))
+    res = Ruler.ContextList.get(ctx, bindings_path(path))
 
     case res do
       nil -> default_value
@@ -68,7 +68,7 @@ defmodule Ruler.InterpreterList do
   def reduce(ctx, ["set" | path_with_val]) do
     val = List.last(path_with_val)
     path = path_with_val -- [val]
-    Ruler.Context.set(ctx, bindings_path(path), val)
+    Ruler.ContextList.set(ctx, bindings_path(path), val)
   end
 
   def reduce(_ctx, expr) when is_number(expr) do
