@@ -69,12 +69,12 @@ defmodule Ruler.InterpreterStateless do
 
   # read from context
   def eval_ast(ctx, ["." | path]) do
-    Ruler.Context.get(ctx, bindings_path(path))
+    Ruler.Context.get(ctx, bindings_path(ctx, path))
   end
 
   # read from context, fallback to default
   def eval_ast(ctx, [".|" | [default_value | path]]) do
-    case res = Ruler.Context.get(ctx, bindings_path(path)) do
+    case res = Ruler.Context.get(ctx, bindings_path(ctx, path)) do
       {:error, _, ctx} -> {:ok, default_value, ctx}
       _ -> res
     end
@@ -84,7 +84,14 @@ defmodule Ruler.InterpreterStateless do
   def eval_ast(ctx, ["set" | path_with_val]) do
     val = List.last(path_with_val)
     path = path_with_val -- [val]
-    Ruler.Context.set(ctx, bindings_path(path), val)
+    Ruler.Context.set(ctx, bindings_path(ctx, path), val)
+  end
+
+  def eval_ast(ctx, ["do" | [item_path | blk = [[[var_name], blk_expr]]]]) do
+    with {:ok, item, ctx} <- eval_ast(ctx, item_path),
+         {:ok, true, ctx_1} <- eval_ast(ctx, ["set", var_name, item]),
+         {:ok, res, ctx_2} <- eval_ast(ctx_1, blk_expr),
+         do: {:ok, res, ctx_2}
   end
 
   def eval_ast(ctx, expr) when is_number(expr) do
@@ -97,7 +104,8 @@ defmodule Ruler.InterpreterStateless do
     {:ok, expr, ctx}
   end
 
-  defp bindings_path(path) do
+  # TODO: make sure path contains only string by evaling more complex expressions
+  defp bindings_path(_ctx, path) do
     ["bindings" | path]
   end
 end
