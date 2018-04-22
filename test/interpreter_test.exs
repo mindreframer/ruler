@@ -1,14 +1,16 @@
 defmodule Ruler.InterpreterListTest do
   use ExUnit.Case
-  doctest Ruler.InterpreterList
+  doctest Ruler.InterpreterStateless
   use DecimalArithmetic # this helps asserting decimals against plain values
 
   def check(expr, out) when is_list(expr) do
-    assert Ruler.InterpreterList.reduce(%{}, expr) == out
+    {:ok, res, _new_ctx} = Ruler.InterpreterStateless.eval_ast(%{}, expr)
+    assert res == out
   end
 
   def check(ctx, expr, out) when is_list(expr) do
-    assert Ruler.InterpreterList.reduce(ctx, expr) == out
+    {:ok, res, _new_ctx} = Ruler.InterpreterStateless.eval_ast(ctx, expr)
+    assert res == out
   end
 
   test "works with basic math" do
@@ -60,16 +62,5 @@ defmodule Ruler.InterpreterListTest do
     check(ctx, ["-", [".", "a", "b"], 4], 1)
     check(ctx, ["+", [".", "d"], 1], 2)
     check(ctx, ["-", [".|", 6, "a", "c"], 4], 2)
-  end
-
-  test "state in agents" do
-    {:ok, ctx} = Ruler.KVAgent.start_link([])
-    check(ctx, ["set", "a", 1], :ok)
-    check(ctx, [".", "a"], 1)
-
-    # setting nested paths requires the objects to exist
-    check(ctx, ["set", "b", %{}], :ok)
-    check(ctx, ["set", "b", "d", 2], :ok)
-    check(ctx, [".", "b", "d"], 2)
   end
 end

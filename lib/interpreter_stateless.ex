@@ -74,10 +74,8 @@ defmodule Ruler.InterpreterStateless do
 
   # read from context, fallback to default
   def eval_ast(ctx, [".|" | [default_value | path]]) do
-    res = Ruler.Context.get(ctx, bindings_path(path))
-
-    case res do
-      nil -> default_value
+    case res = Ruler.Context.get(ctx, bindings_path(path)) do
+      {:error, _, ctx} -> {:ok, default_value, ctx}
       _ -> res
     end
   end

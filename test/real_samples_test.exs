@@ -18,7 +18,7 @@ defmodule Ruler.RealSamplesTest do
         }
       }
     }
-    res = Ruler.InterpreterList.reduce(ctx, a)
+    {:ok, res, _new_ctx} = Ruler.InterpreterStateless.eval_ast(ctx, a)
     assert res == Decimal.new(28.10999999999998)
   end
 end
