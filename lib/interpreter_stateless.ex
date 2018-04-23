@@ -67,11 +67,11 @@ defmodule Ruler.InterpreterStateless do
 
   ## logic
   def eval_ast(ctx, ["and" | conditions]) do
-    {:ok, Enum.all?(conditions, fn x -> eval_ast(ctx, x) == {:ok, true, ctx} end), ctx}
+    {:ok, conditions |> Enum.all?(fn x -> eval_ast(ctx, x) == {:ok, true, ctx} end), ctx}
   end
 
   def eval_ast(ctx, ["or" | conditions]) do
-    {:ok, Enum.any?(conditions, fn x -> eval_ast(ctx, x) == {:ok, true, ctx} end), ctx}
+    {:ok, conditions |> Enum.any?(fn x -> eval_ast(ctx, x) == {:ok, true, ctx} end), ctx}
   end
 
   # read from context
@@ -94,7 +94,7 @@ defmodule Ruler.InterpreterStateless do
     Ruler.Context.set(ctx, bindings_path(ctx, path), val)
   end
 
-  def eval_ast(ctx, ["do" | [item_path | blk = [[[var_name], blk_expr]]]]) do
+  def eval_ast(ctx, ["do" | [item_path | _blk = [[[var_name], blk_expr]]]]) do
     with {:ok, item, ctx} <- eval_ast(ctx, item_path),
          {:ok, true, ctx_1} <- eval_ast(ctx, ["set", var_name, item]),
          {:ok, res, ctx_2} <- eval_ast(ctx_1, blk_expr),
@@ -108,14 +108,16 @@ defmodule Ruler.InterpreterStateless do
     end
   end
 
-  def eval_ast(ctx, ["filter" | [collection | blk = [[[var_name], blk_expr]]]]) do
+  def eval_ast(ctx, ["filter" | [collection | _blk = [[[var_name], blk_expr]]]]) do
     with {:ok, collection, ctx} <- eval_ast(ctx, collection),
-          res <- Enum.filter(collection, fn(item)-> collections_helper(ctx, item, var_name, blk_expr) == {:ok, true} end),
-          do: {:ok, res, ctx}
+         res <-
+           Enum.filter(collection, fn item ->
+             collections_helper(ctx, item, var_name, blk_expr) == {:ok, true}
+           end),
+         do: {:ok, res, ctx}
   end
 
-
-  def eval_ast(ctx, ["filter" | [collection | _blk]]) do
+  def eval_ast(ctx, ["filter" | [_collection | _blk]]) do
     {:error, {:filter_did_not_match}, ctx}
   end
 
@@ -123,31 +125,27 @@ defmodule Ruler.InterpreterStateless do
     {:ok, true, ctx}
   end
 
-  # count
-
-  # sum
-  def eval_ast(ctx, ["sum" | [collection | blk = [[[var_name], blk_expr]]]]) do
-    # Enum.reduce([1, 2, 3], 0, fn(x, acc) -> x + acc end)
+  def eval_ast(ctx, ["sum" | [collection | _blk = [[[var_name], blk_expr]]]]) do
     with {:ok, collection, ctx} <- eval_ast(ctx, collection),
-      res <- Enum.reduce(collection, 0, fn(item, acc)->
-        case collections_helper(ctx, item, var_name, blk_expr) do
-          {:ok, item_res} -> acc + item_res
-          _ -> 0
-        end
-      end),
-      do: {:ok, res, ctx}
+         res <-
+           Enum.reduce(collection, 0, fn item, acc ->
+             case collections_helper(ctx, item, var_name, blk_expr) do
+               {:ok, item_res} -> acc + item_res
+               _ -> 0
+             end
+           end),
+         do: {:ok, res, ctx}
   end
 
   def eval_ast(ctx, ["count", collection]) do
-    # Enum.reduce([1, 2, 3], 0, fn(x, acc) -> x + acc end)
     with {:ok, collection, ctx} <- eval_ast(ctx, collection),
-      true <- is_list(collection),
-      res <- length(collection) do
-         {:ok, res, ctx}
-      else
-        false -> {:error, {:not_a_list, collection}, ctx}
-        err     -> {:error, err}
-      end
+         true <- is_list(collection),
+         res <- length(collection) do
+      {:ok, res, ctx}
+    else
+      false -> {:error, {:not_a_list, collection}, ctx}
+      err -> {:error, err}
+    end
   end
 
   # "foreach"
@@ -174,7 +172,7 @@ defmodule Ruler.InterpreterStateless do
 
   defp collections_helper(ctx, item, varname, blk_expr) do
     with {:ok, true, ctx_1} <- eval_ast(ctx, ["set", varname, item]),
-         {:ok, res, ctx_2} <- eval_ast(ctx_1, blk_expr),
+         {:ok, res, _ctx_2} <- eval_ast(ctx_1, blk_expr),
          do: {:ok, res}
   end
 end
