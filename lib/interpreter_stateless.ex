@@ -138,6 +138,18 @@ defmodule Ruler.InterpreterStateless do
       do: {:ok, res, ctx}
   end
 
+  def eval_ast(ctx, ["count", collection]) do
+    # Enum.reduce([1, 2, 3], 0, fn(x, acc) -> x + acc end)
+    with {:ok, collection, ctx} <- eval_ast(ctx, collection),
+      true <- is_list(collection),
+      res <- length(collection) do
+         {:ok, res, ctx}
+      else
+        false -> {:error, {:not_a_list, collection}, ctx}
+        err     -> {:error, err}
+      end
+  end
+
   # "foreach"
 
   def eval_ast(ctx, expr) when is_number(expr) do

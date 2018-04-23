@@ -200,7 +200,7 @@ defmodule Ruler.InterpreterListTest do
     assert res == []
   end
 
-  @tag focus: true
+
   test ":sum" do
     expr = [
       "sum",
@@ -224,5 +224,28 @@ defmodule Ruler.InterpreterListTest do
     ]
     {:ok, res, _} = eval_ast(@default_ctx, expr)
     assert res == 0
+  end
+
+  @tag focus: true
+  test ":count" do
+    expr = [
+      "count",
+      [1,2,3,4],
+    ]
+    {:ok, res, _} = eval_ast(@default_ctx, expr)
+    assert res == 4
+
+    expr = [
+      "count",
+      [".", "a"],
+    ]
+    {:ok, res, _} = eval_ast(%{"bindings" => %{"a" => [2,2]}}, expr)
+    assert res == 2
+
+    expr = [
+      "count",
+      [".", "a"],
+    ]
+    {:error, {:not_a_list, [".", "a"]}, %{"bindings" => %{"a" => 1}}} = eval_ast(%{"bindings" => %{"a" => 1}}, expr)
   end
 end
