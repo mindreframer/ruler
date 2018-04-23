@@ -110,7 +110,7 @@ defmodule Ruler.InterpreterStateless do
 
   def eval_ast(ctx, ["filter" | [collection | blk = [[[var_name], blk_expr]]]]) do
     with {:ok, collection, ctx} <- eval_ast(ctx, collection),
-          res <- Enum.filter(collection, fn(item)-> filter_helper(ctx, item, var_name, blk_expr) == {:ok, true} end),
+          res <- Enum.filter(collection, fn(item)-> collections_helper(ctx, item, var_name, blk_expr) == {:ok, true} end),
           do: {:ok, res, ctx}
   end
 
@@ -119,17 +119,24 @@ defmodule Ruler.InterpreterStateless do
     {:error, {:filter_did_not_match}, ctx}
   end
 
-  def filter_helper(ctx, item, varname, blk_expr) do
-    with {:ok, true, ctx_1} <- eval_ast(ctx, ["set", varname, item]),
-         {:ok, res, ctx_2} <- eval_ast(ctx_1, blk_expr),
-         do: {:ok, res}
+  def eval_ast(ctx, ["noop"]) do
+    {:ok, true, ctx}
   end
 
   # count
 
   # sum
-
-  # "noop"
+  def eval_ast(ctx, ["sum" | [collection | blk = [[[var_name], blk_expr]]]]) do
+    # Enum.reduce([1, 2, 3], 0, fn(x, acc) -> x + acc end)
+    with {:ok, collection, ctx} <- eval_ast(ctx, collection),
+      res <- Enum.reduce(collection, 0, fn(item, acc)->
+        case collections_helper(ctx, item, var_name, blk_expr) do
+          {:ok, item_res} -> acc + item_res
+          _ -> 0
+        end
+      end),
+      do: {:ok, res, ctx}
+  end
 
   # "foreach"
 
@@ -151,5 +158,11 @@ defmodule Ruler.InterpreterStateless do
   # TODO: make sure path contains only string by evaling more complex expressions
   defp bindings_path(_ctx, path) do
     ["bindings" | path]
+  end
+
+  defp collections_helper(ctx, item, varname, blk_expr) do
+    with {:ok, true, ctx_1} <- eval_ast(ctx, ["set", varname, item]),
+         {:ok, res, ctx_2} <- eval_ast(ctx_1, blk_expr),
+         do: {:ok, res}
   end
 end

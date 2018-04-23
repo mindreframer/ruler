@@ -159,7 +159,7 @@ defmodule Ruler.InterpreterListTest do
     assert res == true
   end
 
-  @tag focus: true
+
   test ":filter" do
     # assert {:ok, true} = InterpreterStateless.filter_helper(@default_ctx, 1, "x", ["<", [".", "x"], 3])
     # assert {:ok, true} = InterpreterStateless.filter_helper(@default_ctx, 2, "x", ["<", [".", "x"], 3])
@@ -198,5 +198,31 @@ defmodule Ruler.InterpreterListTest do
     ]
     {:ok, res, _} = eval_ast(@default_ctx, expr)
     assert res == []
+  end
+
+  @tag focus: true
+  test ":sum" do
+    expr = [
+      "sum",
+      [1,2,3],
+      [
+        ["x"],
+        [".", "x"]
+      ]
+    ]
+    {:ok, res, _} = eval_ast(@default_ctx, expr)
+    assert res == 6
+
+    # 0 for error in block eval, maybe not desired
+    expr = [
+      "sum",
+      [1,2,3],
+      [
+        ["x"],
+        [".", "y"]
+      ]
+    ]
+    {:ok, res, _} = eval_ast(@default_ctx, expr)
+    assert res == 0
   end
 end
