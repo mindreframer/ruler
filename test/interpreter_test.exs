@@ -43,6 +43,11 @@ defmodule Ruler.InterpreterListTest do
     check([">=", 5, 5], true)
     check([">=", 5, 4], true)
     check([">=", 5, 6], false)
+
+    check(["~", "one", "(^one$|^two$)"], true)
+    check(["~", "two", "(^one$|^two$)"], true)
+    check(["~", "twos", "(^one$|^two$)"], false)
+    check(%{"bindings" => %{"x" => "one"}}, ["~", [".", "x"], "(^one$|^two$)"], true)
   end
 
   test "works with logic operands" do
@@ -114,7 +119,6 @@ defmodule Ruler.InterpreterListTest do
     assert new_ctx == %{"bindings" => %{"a" => %{"b" => 5}, "d" => 1, "x" => 5}}
   end
 
-
   test ":catch" do
     ctx = %{
       "bindings" => %{"a" => %{"b" => 5}, "d" => 1}
@@ -133,6 +137,7 @@ defmodule Ruler.InterpreterListTest do
           ]
         ]
       ])
+
     assert res == "bam"
 
     {:ok, res, _new_ctx} =
@@ -148,6 +153,7 @@ defmodule Ruler.InterpreterListTest do
           ]
         ]
       ])
+
     assert res == true
   end
 end

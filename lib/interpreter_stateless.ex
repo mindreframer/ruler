@@ -58,6 +58,13 @@ defmodule Ruler.InterpreterStateless do
          do: {:ok, op1 == op2, ctx}
   end
 
+  def eval_ast(ctx, ["~", op1, op2]) do
+    with {:ok, op1, ctx} <- eval_ast(ctx, op1),
+         {:ok, op2, ctx} <- eval_ast(ctx, op2),
+         {:ok, op2} <- Regex.compile(op2),
+         do: {:ok, op1 =~ op2, ctx}
+  end
+
   ## logic
   def eval_ast(ctx, ["and" | conditions]) do
     {:ok, Enum.all?(conditions, fn x -> eval_ast(ctx, x) == {:ok, true, ctx} end), ctx}
@@ -95,11 +102,21 @@ defmodule Ruler.InterpreterStateless do
   end
 
   def eval_ast(ctx, ["catch" | [default_value | [expr]]]) do
-    case  eval_ast(ctx, expr) do
+    case eval_ast(ctx, expr) do
       {:ok, res, new_ctx} -> {:ok, res, new_ctx}
       _ -> {:ok, default_value, ctx}
     end
   end
+
+  # filter
+
+  # count
+
+  # sum
+
+  # "noop"
+
+  # "foreach"
 
   def eval_ast(ctx, expr) when is_number(expr) do
     {:ok, Decimal.new(expr), ctx}
