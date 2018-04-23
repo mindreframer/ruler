@@ -1,9 +1,11 @@
 defmodule Ruler.InterpreterListTest do
   use ExUnit.Case
   doctest Ruler.InterpreterStateless
+  alias Ruler.InterpreterStateless
   # this helps asserting decimals against plain values
   use DecimalArithmetic
 
+  @default_ctx  %{"bindings" => %{}}
   def eval_ast(ctx, expr) do
     Ruler.InterpreterStateless.eval_ast(ctx, expr)
   end
@@ -155,5 +157,46 @@ defmodule Ruler.InterpreterListTest do
       ])
 
     assert res == true
+  end
+
+  @tag focus: true
+  test ":filter" do
+    # assert {:ok, true} = InterpreterStateless.filter_helper(@default_ctx, 1, "x", ["<", [".", "x"], 3])
+    # assert {:ok, true} = InterpreterStateless.filter_helper(@default_ctx, 2, "x", ["<", [".", "x"], 3])
+    # assert {:ok, false} = InterpreterStateless.filter_helper(@default_ctx, 3, "x", ["<", [".", "x"], 3])
+
+    expr = [
+      "filter",
+      [1,2,3],
+      [
+        ["x"],
+        ["<", [".", "x"], 3]
+      ]
+    ]
+    {:ok, res, _} = eval_ast(@default_ctx, expr)
+    assert res == [1,2]
+
+    expr = [
+      "filter",
+      [1,2,3],
+      [
+        [],
+        ["<", [".", "y"], 3]
+      ]
+    ]
+    {:error, {:filter_did_not_match}, _} = eval_ast(@default_ctx, expr)
+
+
+    # this silently ignores the wrong binding name... could this be desired outcome?
+    expr = [
+      "filter",
+      [1,2,3],
+      [
+        ["x"],
+        ["<", [".", "y"], 3]
+      ]
+    ]
+    {:ok, res, _} = eval_ast(@default_ctx, expr)
+    assert res == []
   end
 end

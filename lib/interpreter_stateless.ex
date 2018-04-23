@@ -108,7 +108,22 @@ defmodule Ruler.InterpreterStateless do
     end
   end
 
-  # filter
+  def eval_ast(ctx, ["filter" | [collection | blk = [[[var_name], blk_expr]]]]) do
+    with {:ok, collection, ctx} <- eval_ast(ctx, collection),
+          res <- Enum.filter(collection, fn(item)-> filter_helper(ctx, item, var_name, blk_expr) == {:ok, true} end),
+          do: {:ok, res, ctx}
+  end
+
+
+  def eval_ast(ctx, ["filter" | [collection | _blk]]) do
+    {:error, {:filter_did_not_match}, ctx}
+  end
+
+  def filter_helper(ctx, item, varname, blk_expr) do
+    with {:ok, true, ctx_1} <- eval_ast(ctx, ["set", varname, item]),
+         {:ok, res, ctx_2} <- eval_ast(ctx_1, blk_expr),
+         do: {:ok, res}
+  end
 
   # count
 
@@ -125,6 +140,11 @@ defmodule Ruler.InterpreterStateless do
   def eval_ast(ctx, expr)
       when is_boolean(expr)
       when is_binary(expr) do
+    {:ok, expr, ctx}
+  end
+
+  # non-matching list, must be a simple list with data
+  def eval_ast(ctx, expr) when is_list(expr) do
     {:ok, expr, ctx}
   end
 
