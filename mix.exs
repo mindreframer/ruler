@@ -21,13 +21,13 @@ defmodule Ruler.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:decimal_arithmetic, "~> 0.1"},
-      {:decimal, "~> 1.5"},
-      {:mr_t, "~> 0.6.0", only: [:test, :dev]},
+      # {:decimal_arithmetic, "~> 0.1.2"},
+      {:decimal_arithmetic, github: "ruby2elixir/decimal_arithmetic"},
+      {:decimal, "~> 1.8"},
       {:mix_test_watch, "~> 0.5", only: :dev, runtime: false},
-      {:benchee, "~> 0.11", only: :dev},
+      {:benchee, "~> 1.0", only: [:dev, :test]},
       {:ex_unit_notifier, "~> 0.1", only: :test},
-      {:poison, "~> 3.1", only: :test}
+      {:jason, "~> 1.1", only: :test}
     ]
   end
 end

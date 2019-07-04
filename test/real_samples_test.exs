@@ -2,7 +2,7 @@ defmodule Ruler.RealSamplesTest do
   use ExUnit.Case
   def read_fixture(file) do
     c = File.read!("test/fixtures/#{file}")
-    Poison.decode!(c)
+    Jason.decode!(c)
   end
 
   test "fixture1" do
@@ -19,6 +19,6 @@ defmodule Ruler.RealSamplesTest do
       }
     }
     res = Ruler.InterpreterList.reduce(ctx, a)
-    assert res == Decimal.new(28.10999999999998)
+    assert res == Decimal.from_float(28.10999999999998)
   end
 end

@@ -71,8 +71,12 @@ defmodule Ruler.InterpreterList do
     Ruler.Context.set(ctx, bindings_path(path), val)
   end
 
-  def reduce(_ctx, expr) when is_number(expr) do
+  def reduce(_ctx, expr) when is_integer(expr) do
     Decimal.new(expr)
+  end
+
+  def reduce(_ctx, expr) when is_float(expr) do
+    Decimal.from_float(expr)
   end
 
   def reduce(_ctx, expr)
