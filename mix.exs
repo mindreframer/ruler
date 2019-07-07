@@ -22,7 +22,7 @@ defmodule Ruler.MixProject do
   defp deps do
     [
       # {:decimal_arithmetic, "~> 0.1.2"},
-      {:decimal_arithmetic, github: "ruby2elixir/decimal_arithmetic"},
+      {:decimal_arithmetic, "~> 0.1.3"},
       {:decimal, "~> 1.8"},
       {:mix_test_watch, "~> 0.5", only: :dev, runtime: false},
       {:benchee, "~> 1.0", only: [:dev, :test]},
